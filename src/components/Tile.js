@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const TileUnstyled = ({ className, handleClick, name }) => (
+const TileUnstyled = ({ className, dice, handleClick, name }) => (
   <div className={className} onClick={handleClick}>
-    {name}
+    {name}: {dice}
   </div>
 )
 
