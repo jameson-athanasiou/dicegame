@@ -1,12 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const TileUnstyled = ({ className }) => <span className={className}>tile</span>
+const TileUnstyled = ({ className, handleClick, name }) => (
+  <div className={className} onClick={handleClick}>
+    {name}
+  </div>
+)
 
 const Tile = styled(TileUnstyled)`
-  height: 50px;
-  width: 50px;
+  height: 100px;
+  width: 100px;
   border: 1px solid black;
+  float: left;
 `
 
 export default Tile

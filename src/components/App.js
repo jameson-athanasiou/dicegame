@@ -1,16 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { hot } from 'react-hot-loader'
 import styled from 'styled-components'
 import Tile from 'components/Tile'
 
-const countries = ['blue', 'red', 'green', 'yellow']
+const territories = ['blue', 'red', 'green', 'yellow']
 
 const AppUnstyled = ({ className }) => {
+  const [initialSelection, selectTerritory] = useState()
+  console.log({ initialSelection })
+
+  const handleClick = territory => {
+    console.log({ clicked: territory, initialSelection })
+    if (initialSelection === territory) {
+      selectTerritory(null)
+    } else {
+      selectTerritory(territory)
+    }
+  }
+
   return (
     <div className={className}>
-    hey bear
-      {countries.map(name => (
-        <Tile key={name} />
+      {territories.map(name => (
+        <Tile key={name} name={name} handleClick={() => handleClick(name)} />
       ))}
     </div>
   )
