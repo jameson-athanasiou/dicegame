@@ -1,0 +1,20 @@
+language: node_js
+node_js: '12'
+script: npm run pipeline
+cache:
+  directories:
+  - node_modules
+dist: trusty
+notifications:
+  email: false
+  slack:
+    rooms:
+    - dover-boys:HekMr2x7RnLbKn5pCAKmqnLR
+    template:
+    - Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>)
+    - 'Repo: %{repository} - Branch: %{branch}'
+    - 'Build Status: %{result} in %{duration}'
+    - "%{author}"
+    - "%{commit_message}"
+    on_success: always
+    on_failure: always

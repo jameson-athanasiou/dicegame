@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel -p 3000 --no-cache watch index.html",
+    "pipeline": "parcel build index.html",
     "test": "test"
   },
   "repository": {
