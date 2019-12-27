@@ -5,7 +5,7 @@ import { get, random } from 'lodash-es'
 import Tile from 'components/Tile'
 import mapGenerator from 'util/mapGenerator'
 
-const countries = ['blue', 'red', 'green', 'yellow']
+const countries = ['cornflowerblue', 'indianred', 'mediumaquamarine', 'bisque']
 const determineInitialDice = () => random(1, 8)
 
 const rollDice = diceCount => Array.from(Array(diceCount)).reduce(acc => acc + random(1, 6), 0)
@@ -49,7 +49,6 @@ const AppUnstyled = ({ className }) => {
     console.log({ north, south, east, west })
 
     const currentSelection = mapManager[currentRow][currentColumn]
-    console.log({ isBorderTerritory: [north, south, east, west].includes(currentSelection) })
     return [north, south, east, west].includes(currentSelection)
   }
 
