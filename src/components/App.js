@@ -6,20 +6,11 @@ import Tile from 'components/Tile'
 import mapGenerator from 'util/mapGenerator'
 
 const countries = ['cornflowerblue', 'indianred', 'mediumaquamarine', 'bisque']
-const determineInitialDice = () => random(1, 8)
 
 const rollDice = diceCount => Array.from(Array(diceCount)).reduce(acc => acc + random(1, 6), 0)
 
 const AppUnstyled = ({ className }) => {
   const [initialSelection, selectTerritory] = useState([])
-  const [diceTracker, updateDice] = useState({
-    blue: determineInitialDice(),
-    red: determineInitialDice(),
-    green: determineInitialDice(),
-    yellow: determineInitialDice(),
-  })
-  console.log({ initialSelection, diceTracker })
-
   const [mapManager, updateMap] = useState(mapGenerator(countries))
 
   const fight = (attacker, defender) => {
@@ -53,7 +44,6 @@ const AppUnstyled = ({ className }) => {
   }
 
   const handleClick = (territory, row, column) => {
-    console.log({ clicked: territory })
     const [initialRow, initialColumn] = initialSelection
     const currentSelection = [row, column]
     if (initialRow === row && initialColumn === column) {
@@ -90,7 +80,6 @@ const AppUnstyled = ({ className }) => {
 }
 
 const App = styled(AppUnstyled)`
-  color: blue;
   width: 100%;
 `
 
