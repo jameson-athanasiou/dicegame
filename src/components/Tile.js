@@ -12,6 +12,7 @@ const Tile = styled(TileUnstyled)`
   width: 100px;
   border: 1px solid black;
   float: left;
+  background-color: ${props => (props.isSelected ? 'cadetblue' : 'transparent')};
 `
 
 export default Tile

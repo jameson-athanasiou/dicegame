@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
 import { hot } from 'react-hot-loader'
 import styled from 'styled-components'
-import { random } from 'lodash-es'
+import { get, random } from 'lodash-es'
 import Tile from 'components/Tile'
+import mapGenerator from 'util/mapGenerator'
 
-const territories = ['blue', 'red', 'green', 'yellow']
+const countries = ['blue', 'red', 'green', 'yellow']
 const determineInitialDice = () => random(1, 8)
 
 const rollDice = diceCount => Array.from(Array(diceCount)).reduce(acc => acc + random(1, 6), 0)
 
 const AppUnstyled = ({ className }) => {
-  const [initialSelection, selectTerritory] = useState()
+  const [initialSelection, selectTerritory] = useState([])
   const [diceTracker, updateDice] = useState({
     blue: determineInitialDice(),
     red: determineInitialDice(),
@@ -19,36 +20,72 @@ const AppUnstyled = ({ className }) => {
   })
   console.log({ initialSelection, diceTracker })
 
+  const [mapManager, updateMap] = useState(mapGenerator(countries))
+
   const fight = (attacker, defender) => {
-    const attackerDice = diceTracker[attacker]
-    const defenderDice = diceTracker[defender]
+    const [attackerRow, attackerColumn] = attacker
+    const [defenderRow, defenderColumn] = defender
+
+    const attackerDice = mapManager[attackerRow][attackerColumn].dice
+    const defenderDice = mapManager[defenderRow][defenderColumn].dice
 
     const attackerScore = rollDice(attackerDice)
     const defenderScore = rollDice(defenderDice)
 
-    selectTerritory(null)
+    selectTerritory([])
     console.log({ attackerScore, defenderScore })
 
     return attackerScore > defenderScore ? attacker : defender
   }
 
-  const handleClick = territory => {
-    console.log({ clicked: territory, initialSelection })
-    if (initialSelection === territory) {
-      selectTerritory(null)
-    } else if (initialSelection) {
-      const winner = fight(initialSelection, territory)
-      console.log({ winner })
+  const isBorderTerritory = (initial, current) => {
+    const [initialRow, initialColumn] = initial
+    const [currentRow, currentColumn] = current
+    const north = get(mapManager, `[${initialRow + 1}][${initialColumn}]`)
+    const south = get(mapManager, `[${initialRow - 1}][${initialColumn}]`)
+    const east = get(mapManager, `[${initialRow}][${initialColumn - 1}]`)
+    const west = get(mapManager, `[${initialRow}][${initialColumn + 1}]`)
+
+    console.log({ north, south, east, west })
+
+    const currentSelection = mapManager[currentRow][currentColumn]
+    console.log({ isBorderTerritory: [north, south, east, west].includes(currentSelection) })
+    return [north, south, east, west].includes(currentSelection)
+  }
+
+  const handleClick = (territory, row, column) => {
+    console.log({ clicked: territory })
+    const [initialRow, initialColumn] = initialSelection
+    const currentSelection = [row, column]
+    if (initialRow === row && initialColumn === column) {
+      selectTerritory([])
+    } else if (initialRow && initialColumn) {
+      if (!isBorderTerritory(initialSelection, currentSelection)) {
+        selectTerritory([])
+      } else {
+        const [winnerRow, winnerColumn] = fight(initialSelection, currentSelection)
+        console.log({ winner: mapManager[winnerRow][winnerColumn].country })
+      }
     } else {
-      selectTerritory(territory)
+      selectTerritory(currentSelection)
     }
   }
 
+  const [initialRow, initialColumn] = initialSelection
+
   return (
     <div className={className}>
-      {territories.map(name => (
-        <Tile key={name} name={name} dice={diceTracker[name]} handleClick={() => handleClick(name)} />
-      ))}
+      {mapManager.map((row, rowIndex) =>
+        row.map(({ country, dice }, columnIndex) => (
+          <Tile
+            key={`${country} + ${dice} + ${(rowIndex, columnIndex)}`}
+            name={country}
+            dice={dice}
+            isSelected={initialRow === rowIndex && initialColumn === columnIndex}
+            handleClick={() => handleClick(country, rowIndex, columnIndex)}
+          />
+        ))
+      )}
     </div>
   )
 }
